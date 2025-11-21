@@ -1,0 +1,26 @@
+// Auth Starter module - JWT authentication and extensible user model
+
+dependencies {
+    // Spring Boot Web for REST endpoints
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Security for authentication and authorization
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // Spring Data JPA for database operations
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // JWT support
+    api 'io.jsonwebtoken:jjwt-api:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
+
+    // Validation
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Auto-configuration processor
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Optional for auto-configuration
+    compileOnly 'org.springframework.boot:spring-boot-starter'
+}
