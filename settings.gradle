@@ -1,0 +1,4 @@
+rootProject.name = 'krd-spring-starters'
+
+// Declare all modules
+include 'auth-starter'

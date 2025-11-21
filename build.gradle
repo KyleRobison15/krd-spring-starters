@@ -1,0 +1,77 @@
+// Root build configuration for all starters
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+}
+
+// Apply to all subprojects
+subprojects {
+    apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+
+    group = 'com.krd'
+    version = '1.0.0'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    // Shared dependencies for ALL starters
+    dependencies {
+        // Spring Boot BOM for dependency management
+        implementation platform('org.springframework.boot:spring-boot-dependencies:3.4.5')
+
+        // Lombok for all starters
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+
+        // Testing dependencies
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    // Publishing configuration for local Maven repository
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+
+                pom {
+                    name = project.name
+                    description = "KRD Spring Boot Starter - ${project.name}"
+                    url = 'https://github.com/KyleRobison15/krd-spring-starters'
+
+                    licenses {
+                        license {
+                            name = 'MIT License'
+                            url = 'https://opensource.org/licenses/MIT'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = 'kylerobison'
+                            name = 'Kyle Robison'
+                        }
+                    }
+
+                    scm {
+                        connection = 'scm:git:git://github.com/KyleRobison15/krd-spring-starters.git'
+                        developerConnection = 'scm:git:ssh://github.com:KyleRobison15/krd-spring-starters.git'
+                        url = 'https://github.com/KyleRobison15/krd-spring-starters'
+                    }
+                }
+            }
+        }
+    }
+}
