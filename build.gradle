@@ -3,33 +3,42 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 // Apply to all subprojects
 subprojects {
     apply plugin: 'java-library'
     apply plugin: 'maven-publish'
+    apply plugin: 'io.spring.dependency-management'
 
     group = 'com.krd'
     version = '1.0.0'
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     repositories {
         mavenCentral()
     }
 
+    // Import Spring Boot BOM for dependency management
+    dependencyManagement {
+        imports {
+            mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.5'
+        }
+    }
+
     // Shared dependencies for ALL starters
     dependencies {
-        // Spring Boot BOM for dependency management
-        implementation platform('org.springframework.boot:spring-boot-dependencies:3.4.5')
-
         // Lombok for all starters
         compileOnly 'org.projectlombok:lombok'
         annotationProcessor 'org.projectlombok:lombok'
+
+        // Configuration processor
+        annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
         // Testing dependencies
         testImplementation 'org.springframework.boot:spring-boot-starter-test'
