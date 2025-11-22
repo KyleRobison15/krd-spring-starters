@@ -1,26 +1,34 @@
 // Auth Starter module - JWT authentication and extensible user model
+// Minimal version - only includes auth-specific dependencies
+// Requires Web, JPA, and Validation to be provided by consuming application
 
 dependencies {
-    // Spring Boot Web for REST endpoints
-    api 'org.springframework.boot:spring-boot-starter-web'
+    // Auth-specific dependencies (included in this starter)
 
     // Spring Security for authentication and authorization
     api 'org.springframework.boot:spring-boot-starter-security'
-
-    // Spring Data JPA for database operations
-    api 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // JWT support
     api 'io.jsonwebtoken:jjwt-api:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.12.6'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
 
-    // Validation
-    api 'org.springframework.boot:spring-boot-starter-validation'
+    // Required dependencies (must be provided by consuming application)
 
-    // Auto-configuration processor
-    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    // Spring Boot Web - needed for REST endpoints and controllers
+    compileOnly 'org.springframework.boot:spring-boot-starter-web'
 
-    // Optional for auto-configuration
+    // Spring Data JPA - needed for BaseUser entity and repositories
+    compileOnly 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+    // Validation - needed for request validation
+    compileOnly 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Auto-configuration
     compileOnly 'org.springframework.boot:spring-boot-starter'
+
+    // Annotation processors (inherited versions from root build.gradle)
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 }

@@ -14,11 +14,30 @@ Spring Boot starter for JWT-based authentication with an extensible user model.
 
 ## Installation
 
-Add the dependency to your `build.gradle`:
+This starter requires Spring Boot Web, Data JPA, and Validation to be provided by your application.
+
+**Option 1: Use with rest-api-mysql-starter (Recommended)**
+
+```gradle
+dependencies {
+    implementation 'com.krd:rest-api-mysql-starter:1.0.0'
+    // Includes auth-starter + all required dependencies
+}
+```
+
+**Option 2: Standalone usage**
 
 ```gradle
 dependencies {
     implementation 'com.krd:auth-starter:1.0.0'
+
+    // Required dependencies (must be provided)
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Database driver (your choice)
+    runtimeOnly 'com.mysql:mysql-connector-j'  // or PostgreSQL, H2, etc.
 }
 ```
 
