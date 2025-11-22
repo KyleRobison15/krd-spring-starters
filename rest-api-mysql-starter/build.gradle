@@ -1,0 +1,24 @@
+// REST API MySQL Starter - Complete stack for building REST APIs with MySQL
+// Includes: Web, Security, JPA, MySQL, Flyway, MapStruct, OpenAPI, Validation
+
+dependencies {
+    // Auth functionality (brings Security + JWT)
+    api project(':auth-starter')
+
+    // Core Spring Boot stack (provides what auth-starter needs)
+    api 'org.springframework.boot:spring-boot-starter-web'
+    api 'org.springframework.boot:spring-boot-starter-data-jpa'
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Database
+    api 'com.mysql:mysql-connector-j'
+    api 'org.flywaydb:flyway-core'
+    api 'org.flywaydb:flyway-mysql'
+
+    // DTO mapping
+    api 'org.mapstruct:mapstruct:1.6.3'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
+    // API documentation
+    api 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.6'
+}

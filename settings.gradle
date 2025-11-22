@@ -2,3 +2,4 @@ rootProject.name = 'krd-spring-starters'
 
 // Declare all modules
 include 'auth-starter'
+include 'rest-api-mysql-starter'
