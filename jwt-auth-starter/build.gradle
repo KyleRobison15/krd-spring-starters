@@ -1,0 +1,37 @@
+// Module-specific dependencies
+dependencies {
+    // Spring Boot - use 'api' so these dependencies are available to consuming projects
+    api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    // Configuration Properties support
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // JWT Libraries - use 'api' for jjwt-api, 'implementation' for others
+    api 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Servlet API (provided by Spring Boot)
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+// Module-specific POM configuration
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'JWT Auth Starter'
+                description = 'Spring Boot Starter for JWT Authentication with dual-token system (access + refresh tokens). Provides JwtUser interface, JwtService, and JwtAuthenticationFilter for easy integration.'
+            }
+        }
+    }
+}
