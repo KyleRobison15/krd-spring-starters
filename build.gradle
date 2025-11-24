@@ -1,0 +1,110 @@
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'com.krd'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+// Import Spring Boot BOM for dependency management
+dependencyManagement {
+    imports {
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.4.5'
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Spring Boot - use 'api' so these dependencies are available to consuming projects
+    api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+
+    // Configuration Properties support
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // JWT Libraries - use 'api' for jjwt-api, 'implementation' for others
+    api 'io.jsonwebtoken:jjwt-api:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+
+    // Lombok
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+
+    // Servlet API (provided by Spring Boot)
+    compileOnly 'jakarta.servlet:jakarta.servlet-api'
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
+
+// Maven publishing configuration
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = 'JWT Auth Starter'
+                description = 'Spring Boot Starter for JWT Authentication with dual-token system (access + refresh tokens)'
+                url = 'https://github.com/KyleRobison15/jwt-auth-starter'
+
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://opensource.org/licenses/MIT'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id = 'kylerobison'
+                        name = 'Kyle Robison'
+                        email = 'kyle@example.com'
+                    }
+                }
+
+                scm {
+                    connection = 'scm:git:git://github.com/KyleRobison15/jwt-auth-starter.git'
+                    developerConnection = 'scm:git:ssh://github.com:KyleRobison15/jwt-auth-starter.git'
+                    url = 'https://github.com/KyleRobison15/jwt-auth-starter'
+                }
+            }
+        }
+    }
+
+    repositories {
+        mavenLocal()  // Publish to Maven Local for testing
+
+        // Uncomment to publish to Maven Central or other repository
+        // maven {
+        //     name = "MavenCentral"
+        //     url = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
+        //     credentials {
+        //         username = project.findProperty("ossrhUsername") ?: ""
+        //         password = project.findProperty("ossrhPassword") ?: ""
+        //     }
+        // }
+    }
+}
+
+// Generate sources jar for better IDE support
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
