@@ -1,0 +1,8 @@
+rootProject.name = 'krd-spring-starters'
+
+// Declare all modules
+include 'jwt-auth-starter'
+
+// Future starters can be added here:
+// include 'security-rules-starter'
+// include 'payment-gateway-starter'
