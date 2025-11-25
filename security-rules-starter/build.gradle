@@ -1,0 +1,11 @@
+// Security Rules Starter module - Modular security rule configuration
+// Provides an interface and auto-configuration for organizing Spring Security authorization rules by feature
+
+dependencies {
+    // Spring Security for authorization configuration
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // Auto-configuration support
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+}
