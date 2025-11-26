@@ -33,14 +33,18 @@ public class RoleChangeLog {
 
     /**
      * ID of the user whose role was changed.
+     * <p>
+     * Nullable to preserve audit trail if user is hard-deleted.
      */
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id")
     private Long userId;
 
     /**
      * ID of the admin who made the change.
+     * <p>
+     * Nullable to preserve audit trail if admin is hard-deleted.
      */
-    @Column(name = "changed_by_user_id", nullable = false)
+    @Column(name = "changed_by_user_id")
     private Long changedByUserId;
 
     /**
