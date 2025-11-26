@@ -16,6 +16,10 @@ dependencies {
     api 'org.flywaydb:flyway-core'
     api 'org.flywaydb:flyway-mysql'
 
+    // MapStruct for DTOs
+    api 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+
     // Utilities
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
