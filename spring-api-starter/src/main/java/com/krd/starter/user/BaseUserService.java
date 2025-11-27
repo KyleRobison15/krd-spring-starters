@@ -86,31 +86,70 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
     }
 
     /**
-     * Register a new user.
+     * Register a new user or auto-reactivate a soft-deleted account.
      * <p>
-     * - Validates email uniqueness
-     * - Validates username uniqueness (if provided)
+     * Auto-reactivation logic:
+     * - If email belongs to a soft-deleted account, it's automatically reactivated
+     * - The original account is restored with the new password
+     * - All historical data (orders, preferences, etc.) is preserved
+     * <p>
+     * New user logic:
+     * - Validates email uniqueness (for active accounts)
+     * - Validates username uniqueness (if provided, for active accounts)
      * - Hashes password before storage
      * - Assigns default USER role
      *
      * @param request Registration request with user details
-     * @return Created user DTO
-     * @throws DuplicateUserException if email or username already exists
+     * @return Created or reactivated user DTO
+     * @throws DuplicateUserException if email or username already exists in active accounts
      */
     public D registerUser(RegisterUserRequest request) {
+        // Check if this email belongs to a soft-deleted account
+        var deletedEmailWithSuffix = request.getEmail() + "_deleted";
+        var deletedUser = repository.findByEmailIncludingDeleted(deletedEmailWithSuffix)
+                .filter(user -> user.getDeletedAt() != null)
+                .orElse(null);
+
+        if (deletedUser != null) {
+            // Auto-reactivate the soft-deleted account
+            deletedUser.setDeletedAt(null);
+            deletedUser.setEnabled(true);
+            deletedUser.setEmail(request.getEmail()); // Restore original email
+            deletedUser.setPassword(passwordEncoder.encode(request.getPassword()));
+
+            // Update optional fields from request
+            if (request.getFirstName() != null) {
+                deletedUser.setFirstName(request.getFirstName());
+            }
+            if (request.getLastName() != null) {
+                deletedUser.setLastName(request.getLastName());
+            }
+            if (request.getUsername() != null) {
+                // Remove "_deleted" suffix from username
+                deletedUser.setUsername(request.getUsername());
+            }
+
+            repository.save(deletedUser);
+            return mapper.toDto(deletedUser);
+        }
+
+        // No deleted account found - proceed with normal registration
+
+        // Validate email is not in use by active account
         if (repository.existsByEmail(request.getEmail())) {
             throw new DuplicateUserException();
         }
 
-        // Only check for duplicate username if one is provided
+        // Validate username is not in use by active account (if provided)
         if (request.getUsername() != null && !request.getUsername().isBlank()
                 && repository.existsByUsername(request.getUsername())) {
             throw new DuplicateUserException("A user with this username already exists");
         }
 
+        // Create new user
         T user = mapper.toEntity(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword())); // Hash the user's password
-        user.setRoles(Set.of("USER")); // Assign default USER role
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(Set.of("USER"));
         repository.save(user);
 
         return mapper.toDto(user);
@@ -170,7 +209,10 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
      * - Admins cannot delete themselves (prevents lockout)
      * - Cannot delete the last admin (ensures system access)
      * <p>
-     * Sets deletedAt timestamp and disables the account.
+     * Soft delete process:
+     * 1. Sets deletedAt timestamp
+     * 2. Disables the account
+     * 3. Appends "_deleted" to email and username to free up unique constraints
      *
      * @param userId The user ID to delete
      * @throws UserNotFoundException if user doesn't exist
@@ -194,9 +236,19 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
             }
         }
 
-        // Soft delete: Mark as deleted and disable account
+        // Soft delete: Mark as deleted, disable account, and append "_deleted" to unique fields
         userToDelete.setDeletedAt(LocalDateTime.now());
         userToDelete.setEnabled(false);
+
+        // Append "_deleted" to free up unique constraints
+        if (!userToDelete.getEmail().endsWith("_deleted")) {
+            userToDelete.setEmail(userToDelete.getEmail() + "_deleted");
+        }
+
+        if (userToDelete.getUsername() != null && !userToDelete.getUsername().endsWith("_deleted")) {
+            userToDelete.setUsername(userToDelete.getUsername() + "_deleted");
+        }
+
         repository.save(userToDelete);
     }
 
