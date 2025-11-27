@@ -37,18 +37,17 @@
 - [x] Refactor spring-api-with-krd-starters to use the new starter
 - [x] Fix parameter name resolution error in BaseUserController
 - [x] Fix soft-delete duplicate entry bug (Approach 2: email-only modification with auto-reactivation)
-
-## In Progress 🚧
+- [x] Fix username validation to check soft-deleted users during registration
 
 ### Phase 7: Authentication Endpoints
-- [ ] Extract AuthService into BaseAuthService
-- [ ] Extract AuthController into BaseAuthController
-- [ ] Implement login endpoint with cookie-based refresh token
-- [ ] Implement refresh token endpoint
-- [ ] Implement /me endpoint for getting current user
-- [ ] Refactor consumer project to extend base auth classes
+- [x] Extract AuthService into BaseAuthService
+- [x] Extract AuthController into BaseAuthController
+- [x] Implement login endpoint with cookie-based refresh token
+- [x] Implement refresh token endpoint
+- [x] Implement /me endpoint for getting current user
+- [x] Refactor consumer project to extend base auth classes
 
-## Planned Features 📋
+## In Progress 🚧
 
 ### Phase 8: Hard Delete Feature
 - [ ] Add configurable hard delete after X days for soft-deleted users
@@ -56,6 +55,8 @@
 - [ ] Add configuration properties for hard delete threshold
 - [ ] Add admin endpoint to manually trigger hard delete for specific users
 - [ ] Update documentation with hard delete behavior
+
+## Planned Features 📋
 
 ### Phase 9: Template Project
 - [ ] Create GitHub template project with spring-api-starter
