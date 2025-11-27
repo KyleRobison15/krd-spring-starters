@@ -106,4 +106,17 @@ public interface BaseUserRepository<T extends BaseUser> extends JpaRepository<T,
      */
     @Query("SELECT u FROM #{#entityName} u WHERE u.email = :email")
     Optional<T> findByEmailIncludingDeleted(@Param("email") String email);
+
+    /**
+     * Checks if a user exists with the given username (including soft-deleted users).
+     * <p>
+     * Used during registration to prevent username conflicts with soft-deleted accounts.
+     * Since usernames remain locked when users are soft-deleted (to preserve identity),
+     * we need to validate against all usernames, not just active ones.
+     *
+     * @param username the username to check
+     * @return true if any user exists with this username (active or deleted)
+     */
+    @Query("SELECT COUNT(u) > 0 FROM #{#entityName} u WHERE u.username = :username")
+    boolean existsByUsernameIncludingDeleted(@Param("username") String username);
 }

@@ -138,9 +138,9 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
             throw new DuplicateUserException();
         }
 
-        // Validate username is not in use by active account (if provided)
+        // Validate username is not in use (including soft-deleted accounts, since usernames remain locked)
         if (request.getUsername() != null && !request.getUsername().isBlank()
-                && repository.existsByUsername(request.getUsername())) {
+                && repository.existsByUsernameIncludingDeleted(request.getUsername())) {
             throw new DuplicateUserException("A user with this username already exists");
         }
 
