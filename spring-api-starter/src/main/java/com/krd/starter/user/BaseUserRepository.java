@@ -95,4 +95,15 @@ public interface BaseUserRepository<T extends BaseUser> extends JpaRepository<T,
      */
     @Query("SELECT COUNT(u) FROM #{#entityName} u JOIN u.roles r WHERE r = :role AND u.deletedAt IS NULL")
     long countByRolesContaining(@Param("role") String role);
+
+    /**
+     * Finds a user by email including soft-deleted users.
+     * <p>
+     * Used for auto-reactivation logic during registration.
+     *
+     * @param email the email to search for
+     * @return Optional containing the user if found (including deleted)
+     */
+    @Query("SELECT u FROM #{#entityName} u WHERE u.email = :email")
+    Optional<T> findByEmailIncludingDeleted(@Param("email") String email);
 }
