@@ -66,7 +66,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      */
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public Iterable<D> getAllUsers(@RequestParam(required = false, defaultValue = "", name = "sort") String sort) {
+    public Iterable<D> getAllUsers(@RequestParam(value = "sort", required = false, defaultValue = "") String sort) {
         return service.getAllUsers(sort);
     }
 
@@ -77,7 +77,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      * @return User DTO
      */
     @GetMapping("/{id}")
-    public D getUserById(@PathVariable Long id) {
+    public D getUserById(@PathVariable("id") Long id) {
         return service.getUser(id);
     }
 
@@ -109,7 +109,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      * @return Updated user DTO
      */
     @PutMapping("/{id}")
-    public D updateUser(@PathVariable(name = "id") Long id, @Valid @RequestBody UpdateUserRequest request) {
+    public D updateUser(@PathVariable("id") Long id, @Valid @RequestBody UpdateUserRequest request) {
         return service.updateUser(id, request);
     }
 
@@ -124,7 +124,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") Long id) {
         service.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
@@ -139,7 +139,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      * @return 204 No Content
      */
     @PostMapping("/{id}/change-password")
-    public ResponseEntity<Void> changePassword(@PathVariable Long id, @Valid @RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<Void> changePassword(@PathVariable("id") Long id, @Valid @RequestBody ChangePasswordRequest request) {
         service.changePassword(id, request);
         return ResponseEntity.noContent().build();
     }
@@ -156,7 +156,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      */
     @PostMapping("/{id}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public D addRole(@PathVariable Long id, @Valid @RequestBody AddRoleRequest request) {
+    public D addRole(@PathVariable("id") Long id, @Valid @RequestBody AddRoleRequest request) {
         return service.addRole(id, request);
     }
 
@@ -173,7 +173,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      */
     @DeleteMapping("/{id}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public D removeRole(@PathVariable Long id, @Valid @RequestBody RemoveRoleRequest request) {
+    public D removeRole(@PathVariable("id") Long id, @Valid @RequestBody RemoveRoleRequest request) {
         return service.removeRole(id, request);
     }
 
@@ -187,7 +187,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
      */
     @GetMapping("/{id}/roles")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Set<String>> getUserRoles(@PathVariable Long id) {
+    public ResponseEntity<Set<String>> getUserRoles(@PathVariable("id") Long id) {
         var user = service.getUser(id);
         return ResponseEntity.ok(user.getRoles());
     }
