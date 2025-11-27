@@ -92,6 +92,7 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
      * - If email belongs to a soft-deleted account, it's automatically reactivated
      * - The original account is restored with the new password
      * - All historical data (orders, preferences, etc.) is preserved
+     * - Username from the original account is preserved (not updated from request)
      * <p>
      * New user logic:
      * - Validates email uniqueness (for active accounts)
@@ -124,10 +125,7 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
             if (request.getLastName() != null) {
                 deletedUser.setLastName(request.getLastName());
             }
-            if (request.getUsername() != null) {
-                // Remove "_deleted" suffix from username
-                deletedUser.setUsername(request.getUsername());
-            }
+            // Note: Username is not updated - it remains unchanged from the original account
 
             repository.save(deletedUser);
             return mapper.toDto(deletedUser);
@@ -212,7 +210,8 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
      * Soft delete process:
      * 1. Sets deletedAt timestamp
      * 2. Disables the account
-     * 3. Appends "_deleted" to email and username to free up unique constraints
+     * 3. Appends "_deleted" to email to free up unique constraint
+     * 4. Username remains unchanged to preserve user's identity claim
      *
      * @param userId The user ID to delete
      * @throws UserNotFoundException if user doesn't exist
@@ -236,17 +235,14 @@ public abstract class BaseUserService<T extends BaseUser, D extends BaseUserDto>
             }
         }
 
-        // Soft delete: Mark as deleted, disable account, and append "_deleted" to unique fields
+        // Soft delete: Mark as deleted, disable account, and append "_deleted" to email
         userToDelete.setDeletedAt(LocalDateTime.now());
         userToDelete.setEnabled(false);
 
-        // Append "_deleted" to free up unique constraints
+        // Append "_deleted" to email to free up unique constraint
+        // Username remains unchanged to preserve user's identity claim
         if (!userToDelete.getEmail().endsWith("_deleted")) {
             userToDelete.setEmail(userToDelete.getEmail() + "_deleted");
-        }
-
-        if (userToDelete.getUsername() != null && !userToDelete.getUsername().endsWith("_deleted")) {
-            userToDelete.setUsername(userToDelete.getUsername() + "_deleted");
         }
 
         repository.save(userToDelete);
