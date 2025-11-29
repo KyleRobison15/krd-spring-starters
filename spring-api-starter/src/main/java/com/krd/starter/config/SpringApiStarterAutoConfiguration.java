@@ -3,6 +3,7 @@ package com.krd.starter.config;
 import com.krd.starter.jwt.JwtAuthenticationFilter;
 import com.krd.starter.jwt.JwtConfig;
 import com.krd.starter.jwt.JwtService;
+import com.krd.starter.user.UserManagementConfig;
 import com.krd.starter.validation.PasswordPolicy;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
@@ -10,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -32,6 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *   <li>BCrypt password encoding</li>
  *   <li>Spring Security with JWT-based stateless authentication</li>
  *   <li>Method-level security with @PreAuthorize annotations</li>
+ *   <li>Scheduled tasks for user management (hard delete of soft-deleted users)</li>
  * </ul>
  * <p>
  * <strong>Required Configuration:</strong>
@@ -54,10 +57,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  *       require-lowercase: true
  *       require-digit: true
  *       require-special-char: true
+ *   user:
+ *     hard-delete-enabled: true
+ *     hard-delete-after-days: 180
+ *     hard-delete-cron: "0 0 2 * * *"
  * </pre>
  */
 @AutoConfiguration
-@EnableConfigurationProperties({JwtConfig.class, PasswordPolicy.class})
+@EnableConfigurationProperties({JwtConfig.class, PasswordPolicy.class, UserManagementConfig.class})
 @ComponentScan(basePackages = {
         "com.krd.starter.jwt",
         "com.krd.starter.user",
@@ -65,6 +72,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 })
 @EnableWebSecurity
 @EnableMethodSecurity
+@EnableScheduling
 @AllArgsConstructor
 public class SpringApiStarterAutoConfiguration {
 
