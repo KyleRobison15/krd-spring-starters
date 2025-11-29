@@ -119,4 +119,15 @@ public interface BaseUserRepository<T extends BaseUser> extends JpaRepository<T,
      */
     @Query("SELECT COUNT(u) > 0 FROM #{#entityName} u WHERE u.username = :username")
     boolean existsByUsernameIncludingDeleted(@Param("username") String username);
+
+    /**
+     * Finds users that were soft-deleted before a specific threshold date.
+     * <p>
+     * Used by the hard delete scheduler to find users that should be permanently deleted.
+     *
+     * @param threshold the cutoff date (users deleted before this date will be returned)
+     * @return list of users to be hard deleted
+     */
+    @Query("SELECT u FROM #{#entityName} u WHERE u.deletedAt IS NOT NULL AND u.deletedAt < :threshold")
+    List<T> findByDeletedAtBefore(@Param("threshold") java.time.LocalDateTime threshold);
 }
