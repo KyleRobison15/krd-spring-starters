@@ -1,0 +1,27 @@
+// Payment Gateway Starter module - Payment processing with Stripe integration
+// Provides abstractions and implementations for payment gateway operations
+
+dependencies {
+    // Stripe Java SDK for payment processing
+    implementation 'com.stripe:stripe-java:29.0.0'
+
+    // Spring Boot Web for REST controllers and HTTP support
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    // Validation support for DTOs
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Security Rules Starter for modular security configuration
+    api project(':security-rules-starter')
+
+    // Auto-configuration support
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Logging support
+    api 'org.slf4j:slf4j-api'
+
+    // Lombok for reducing boilerplate code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
