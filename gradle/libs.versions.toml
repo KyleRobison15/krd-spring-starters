@@ -1,0 +1,42 @@
+# Version Catalog for KRD Spring Starters
+# This file centralizes all dependency versions across all starter modules.
+#
+# Usage in build.gradle:
+#   implementation libs.stripe
+#   api libs.jjwt.api
+#   annotationProcessor libs.mapstruct.processor
+#
+# To update a version, simply change it here and all modules will use the new version.
+
+[versions]
+# JWT Authentication
+jjwt = "0.12.6"
+jjwt-jackson = "0.12.5"  # Separate version for jackson binding
+
+# Payment Processing
+stripe = "29.0.0"
+
+# Object Mapping
+mapstruct = "1.5.5.Final"
+
+[libraries]
+# JWT Libraries - Used by spring-api-starter
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt-jackson" }
+
+# Stripe - Used by payment-gateway-starter
+stripe = { module = "com.stripe:stripe-java", version.ref = "stripe" }
+
+# MapStruct - Used by spring-api-starter
+mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "mapstruct" }
+mapstruct-processor = { module = "org.mapstruct:mapstruct-processor", version.ref = "mapstruct" }
+
+[bundles]
+# Dependency bundles group commonly used dependencies together
+# Usage: implementation libs.bundles.jjwt
+jjwt = ["jjwt-api", "jjwt-impl", "jjwt-jackson"]
+
+[plugins]
+# Plugin versions can also be managed here (for future use)
+# Example: kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version = "1.9.0" }

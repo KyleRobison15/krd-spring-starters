@@ -1,31 +1,32 @@
 // Configuration inherited from root build.gradle
+// Dependency versions are managed in gradle/libs.versions.toml
 
 dependencies {
-    // Spring Boot Core
+    // Spring Boot Core (versions managed by Spring Boot BOM)
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-security'
     api 'org.springframework.boot:spring-boot-starter-data-jpa'
     api 'org.springframework.boot:spring-boot-starter-validation'
 
-    // JWT
-    api 'io.jsonwebtoken:jjwt-api:0.12.6'
-    implementation 'io.jsonwebtoken:jjwt-impl:0.12.6'
-    implementation 'io.jsonwebtoken:jjwt-jackson:0.12.5'
+    // JWT (versions managed by version catalog)
+    api libs.jjwt.api
+    implementation libs.jjwt.impl
+    implementation libs.jjwt.jackson
 
-    // Database migrations
+    // Database migrations (versions managed by Spring Boot BOM)
     api 'org.flywaydb:flyway-core'
     api 'org.flywaydb:flyway-mysql'
 
-    // MapStruct for DTOs
-    api 'org.mapstruct:mapstruct:1.5.5.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    // MapStruct for DTOs (version managed by version catalog)
+    api libs.mapstruct
+    annotationProcessor libs.mapstruct.processor
 
-    // Utilities
+    // Utilities (versions managed by Spring Boot BOM)
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-    // Testing
+    // Testing (versions managed by Spring Boot BOM)
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
 }
