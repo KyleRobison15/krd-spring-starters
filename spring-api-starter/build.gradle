@@ -2,6 +2,9 @@
 // Dependency versions are managed in gradle/libs.versions.toml
 
 dependencies {
+    // KRD Starters
+    api project(':security-rules-starter')
+
     // Spring Boot Core (versions managed by Spring Boot BOM)
     api 'org.springframework.boot:spring-boot-starter-web'
     api 'org.springframework.boot:spring-boot-starter-security'
