@@ -32,6 +32,9 @@ import java.util.Set;
  * {@code
  * @Entity
  * @Table(name = "users")
+ * @NoArgsConstructor
+ * @AllArgsConstructor
+ * @SuperBuilder
  * public class User extends BaseUser {
  *     // Add domain-specific fields here
  *     @OneToMany(mappedBy = "user")
@@ -40,7 +43,8 @@ import java.util.Set;
  * }
  * </pre>
  * <p>
- * <strong>Important:</strong> Use @SuperBuilder instead of @Builder when extending this class.
+ * <strong>Important:</strong> Child entities MUST include @NoArgsConstructor, @AllArgsConstructor, and @SuperBuilder annotations.
+ * These are required for JPA (no-args constructor) and Lombok's SuperBuilder pattern to work correctly.
  *
  * @see com.krd.starter.jwt.JwtUser
  */
@@ -49,7 +53,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder
+@SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public abstract class BaseUser implements JwtUser {
 
