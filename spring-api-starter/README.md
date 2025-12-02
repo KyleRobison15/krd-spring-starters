@@ -9,6 +9,7 @@ Opinionated Spring Boot starter that provides complete authentication and user m
 - ✅ Password validation (configurable via YAML)
 - ✅ Role-based access control
 - ✅ Audit logging (role changes)
+- ✅ Modular Security Architecture (via `spring-api-starter`).
 - ✅ Database migrations (Flyway)
 
 ## Installation
