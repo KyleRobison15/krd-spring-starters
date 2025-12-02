@@ -229,15 +229,24 @@ public class SpringApiStarterAutoConfiguration {
                     securityRules.forEach(rule -> rule.configure(auth));
 
                     // Public endpoints
-                    auth.requestMatchers("/auth/**").permitAll()
-                            .requestMatchers(HttpMethod.POST, "/users").permitAll()
-                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
-                            .requestMatchers(HttpMethod.GET, "/actuator/health").permitAll()
+                    auth
+                            .requestMatchers("/swagger-ui/**").permitAll() // Always permit swagger docs
+                            .requestMatchers("/swagger-ui.html/**").permitAll() // Always permit swagger docs
+                            .requestMatchers("/v3/api-docs/**").permitAll() // Always permit swagger docs
+                            .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                             .anyRequest().authenticated();
                 })
-                .exceptionHandling(exc -> exc
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
+                // Tell spring to handle authentication and access exceptions
+                .exceptionHandling(c -> {
+                    c.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                    c.accessDeniedHandler((request, response, accessDeniedException) -> {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                    });
+                })
+
                 .build();
     }
 }
