@@ -7,6 +7,7 @@ Opinionated Spring Boot starter that provides complete authentication and user m
 - ✅ JWT authentication (dual token: access + refresh)
 - ✅ User management (BaseUser with soft delete)
 - ✅ Password validation (configurable via YAML)
+- ✅ CORS Policy (configurable via YAML)
 - ✅ Role-based access control
 - ✅ Audit logging (role changes)
 - ✅ Modular Security Architecture (via `spring-api-starter`).

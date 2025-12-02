@@ -1,7 +1,11 @@
 // Module-specific dependencies
 dependencies {
+    // KRD Starters
+    api project(':security-rules-starter')
+
     // Spring Boot - use 'api' so these dependencies are available to consuming projects
     api 'org.springframework.boot:spring-boot-starter-security'
+    api 'org.springframework.boot:spring-boot-starter-validation'
     api 'org.springframework.boot:spring-boot-autoconfigure'
 
     // Configuration Properties support
@@ -30,7 +34,7 @@ publishing {
         mavenJava(MavenPublication) {
             pom {
                 name = 'JWT Auth Starter'
-                description = 'Spring Boot Starter for JWT Authentication with dual-token system (access + refresh tokens). Provides JwtUser interface, JwtService, and JwtAuthenticationFilter for easy integration.'
+                description = 'Spring Boot Starter for JWT Authentication with Spring Security. Includes dual-token system (access + refresh), password validation, CORS configuration, modular security rules, and complete SecurityFilterChain setup.'
             }
         }
     }
