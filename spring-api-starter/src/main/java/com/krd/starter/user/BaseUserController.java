@@ -6,16 +6,12 @@ import com.krd.starter.user.dto.ChangePasswordRequest;
 import com.krd.starter.user.dto.RegisterUserRequest;
 import com.krd.starter.user.dto.RemoveRoleRequest;
 import com.krd.starter.user.dto.UpdateUserRequest;
-import com.krd.starter.user.exception.DuplicateUserException;
-import com.krd.starter.user.exception.UserNotFoundException;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -192,36 +188,7 @@ public abstract class BaseUserController<T extends BaseUser, D extends BaseUserD
         return ResponseEntity.ok(user.getRoles());
     }
 
-    /**
-     * Exception handler for UserNotFoundException.
-     *
-     * @param e The exception
-     * @return 404 Not Found with error message
-     */
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
-
-    /**
-     * Exception handler for IllegalStateException.
-     *
-     * @param e The exception
-     * @return 400 Bad Request with error message
-     */
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<?> handleIllegalStateException(IllegalStateException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
-
-    /**
-     * Exception handler for DuplicateUserException.
-     *
-     * @param e The exception
-     * @return 400 Bad Request with error message
-     */
-    @ExceptionHandler(DuplicateUserException.class)
-    public ResponseEntity<?> handleDuplicateUserException(DuplicateUserException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
-    }
+    // Exception handling has been moved to application-level GlobalExceptionHandler
+    // for consistency across all endpoints. Applications extending this controller
+    // should implement centralized exception handling using ErrorResponse DTO.
 }

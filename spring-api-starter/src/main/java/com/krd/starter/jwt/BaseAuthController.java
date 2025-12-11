@@ -8,9 +8,7 @@ import com.krd.starter.user.dto.BaseUserDto;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -137,14 +135,7 @@ public abstract class BaseAuthController<T extends BaseUser, D extends BaseUserD
         return ResponseEntity.noContent().build();
     }
 
-    /**
-     * Exception handler for BadCredentialsException.
-     *
-     * @param e The exception
-     * @return 401 Unauthorized
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<Void> handleBadCredentialsException(BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
+    // Exception handling has been moved to application-level GlobalExceptionHandler
+    // for consistency across all endpoints. Applications extending this controller
+    // should implement centralized exception handling using ErrorResponse DTO.
 }
