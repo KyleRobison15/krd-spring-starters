@@ -10,9 +10,9 @@ Opinionated Spring Boot starter that provides complete authentication and user m
 - ✅ **CORS Configuration** - Configurable CORS policy via YAML
 - ✅ **Role-Based Access Control** - Fine-grained permissions with @PreAuthorize
 - ✅ **Audit Logging** - Automatic logging of role changes
-- ✅ **Standardized Error Responses** - RFC 7807 compliant ErrorResponse DTO
+- ✅ **Automatic Exception Handling** - Includes exception-handling-starter for consistent error responses
 - ✅ **Scheduled Tasks** - Automatic hard deletion of soft-deleted users
-- ✅ **Modular Security** - Works with security-rules-starter for composable security
+- ✅ **Modular Security** - Includes security-rules-starter for composable security
 
 ## Installation
 
@@ -180,17 +180,21 @@ JWT_SECRET=your-secret-key-min-256-bits-for-HS256-algorithm
 
 ## Exception Handling Architecture
 
-This starter provides a standardized error response structure but **does not include exception handlers in base controllers**. Instead, applications should create a centralized `GlobalExceptionHandler` for consistent error handling.
+This starter includes the **exception-handling-starter** which provides automatic exception handling for common errors.
 
-### Why No Exception Handlers in Base Controllers?
+### Automatic Exception Handling
 
-Exception handlers defined in base controllers are difficult to override and can lead to inconsistent error responses. The recommended approach is:
-
-1. **ErrorResponse DTO** - Provided by the starter (`com.krd.starter.common.ErrorResponse`)
-2. **GlobalExceptionHandler** - Created in your application with `@Order(HIGHEST_PRECEDENCE)`
-3. **Centralized Handling** - All exceptions handled in one place for consistency
+Common exceptions are handled automatically with zero configuration:
+- Validation errors (400)
+- Malformed JSON (400)
+- Authentication failures (401)
+- Authorization failures (403)
+- Unsupported media types (415)
+- Unexpected errors (500)
 
 ### ErrorResponse Structure
+
+All errors return a consistent RFC 7807-compliant structure:
 
 ```json
 {
@@ -209,38 +213,14 @@ Exception handlers defined in base controllers are difficult to override and can
 }
 ```
 
-### Creating a GlobalExceptionHandler
+### Handling Domain-Specific Exceptions
+
+For exceptions specific to your domain (like `UserNotFoundException`), create a handler with higher precedence:
 
 ```java
 @ControllerAdvice
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class GlobalExceptionHandler {
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationErrors(
-            MethodArgumentNotValidException ex, WebRequest request) {
-
-        List<ErrorResponse.FieldError> fieldErrors = ex.getBindingResult()
-            .getFieldErrors()
-            .stream()
-            .map(error -> ErrorResponse.FieldError.builder()
-                .field(error.getField())
-                .message(error.getDefaultMessage())
-                .rejectedValue(error.getRejectedValue())
-                .build())
-            .collect(Collectors.toList());
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-            .timestamp(LocalDateTime.now())
-            .status(HttpStatus.BAD_REQUEST.value())
-            .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
-            .message("Validation failed for one or more fields")
-            .path(getRequestPath(request))
-            .errors(fieldErrors)
-            .build();
-
-        return ResponseEntity.badRequest().body(errorResponse);
-    }
+@Order(Ordered.HIGHEST_PRECEDENCE) // Higher precedence than starter's global handler
+public class MyAppExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(
@@ -251,21 +231,32 @@ public class GlobalExceptionHandler {
             .status(HttpStatus.NOT_FOUND.value())
             .error(HttpStatus.NOT_FOUND.getReasonPhrase())
             .message(ex.getMessage())
-            .path(getRequestPath(request))
+            .path(request.getDescription(false).replace("uri=", ""))
             .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
-    // Add handlers for other exceptions...
+    @ExceptionHandler(DuplicateUserException.class)
+    public ResponseEntity<ErrorResponse> handleDuplicateUserException(
+            DuplicateUserException ex, WebRequest request) {
 
-    private String getRequestPath(WebRequest request) {
-        return request.getDescription(false).replace("uri=", "");
+        ErrorResponse errorResponse = ErrorResponse.builder()
+            .timestamp(LocalDateTime.now())
+            .status(HttpStatus.CONFLICT.value())
+            .error(HttpStatus.CONFLICT.getReasonPhrase())
+            .message(ex.getMessage())
+            .path(request.getDescription(false).replace("uri=", ""))
+            .build();
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
     }
 }
 ```
 
-See the [spring-api-template](https://github.com/your-org/spring-api-template) for a complete example.
+**Note:** Import `ErrorResponse` from `com.krd.starter.exception.ErrorResponse`
+
+See the exception-handling-starter README for more details on the two-tier exception handling architecture.
 
 ## API Endpoints
 

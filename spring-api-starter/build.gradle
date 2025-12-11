@@ -4,6 +4,7 @@
 dependencies {
     // KRD Starters
     api project(':security-rules-starter')
+    api project(':exception-handling-starter')
 
     // Spring Boot Core (versions managed by Spring Boot BOM)
     api 'org.springframework.boot:spring-boot-starter-web'

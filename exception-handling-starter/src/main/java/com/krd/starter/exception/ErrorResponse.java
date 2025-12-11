@@ -1,4 +1,4 @@
-package com.krd.starter.common;
+package com.krd.starter.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

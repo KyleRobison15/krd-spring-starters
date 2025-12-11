@@ -17,6 +17,24 @@ Comprehensive Spring Boot Starter that combines web, security, data-jpa, validat
 - Base controllers and services for user/auth endpoints
 - Database migrations with Flyway
 - MapStruct for DTO mapping
+- Includes exception-handling-starter and security-rules-starter
+
+---
+
+### Exception Handling Starter
+**Artifact:** `com.krd:exception-handling-starter:1.0.0`
+
+Standardized exception handling and error responses for Spring Boot microservices. Provides consistent, RFC 7807-compliant error responses across all your APIs.
+
+**Features:**
+- Auto-configured global exception handler
+- Standardized ErrorResponse structure
+- Handles common exceptions (validation, auth, malformed JSON, etc.)
+- Zero configuration required
+- Extensible for domain-specific exceptions
+- Consistent error responses across all microservices
+
+[📖 Full Documentation](./exception-handling-starter/README.md)
 
 ---
 
@@ -303,6 +321,11 @@ krd-spring-starters/
 │
 ├── spring-api-starter/             # Comprehensive API Starter
 │   ├── build.gradle               # Uses: libs.jjwt.*, libs.mapstruct
+│   ├── src/
+│   └── README.md
+│
+├── exception-handling-starter/     # Exception Handling Starter
+│   ├── build.gradle
 │   ├── src/
 │   └── README.md
 │

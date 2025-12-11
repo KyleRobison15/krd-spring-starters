@@ -1,0 +1,34 @@
+// Exception Handling Starter module - Standardized error handling for all microservices
+// Provides GlobalExceptionHandler and ErrorResponse for consistent API error responses
+
+dependencies {
+    // Spring Web for @ControllerAdvice, ResponseEntity, HttpStatus
+    api 'org.springframework.boot:spring-boot-starter-web'
+
+    // Spring Security for BadCredentialsException, AccessDeniedException
+    // Made optional so microservices without security can still use this starter
+    compileOnly 'org.springframework.boot:spring-boot-starter-security'
+
+    // Validation for MethodArgumentNotValidException
+    api 'org.springframework.boot:spring-boot-starter-validation'
+
+    // Auto-configuration support
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Lombok for cleaner code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+// Customize POM for this module
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Exception Handling Starter'
+                description = 'Standardized exception handling and error responses for Spring Boot microservices'
+            }
+        }
+    }
+}
