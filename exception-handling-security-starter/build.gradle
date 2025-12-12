@@ -1,0 +1,30 @@
+// Exception Handling Security Starter module - Spring Security exception handling
+// Extends exception-handling-starter with Security-specific exception handlers
+
+dependencies {
+    // Core exception handling starter for ErrorResponse and base handlers
+    api project(':exception-handling-starter')
+
+    // Spring Security for BadCredentialsException, AccessDeniedException, etc.
+    api 'org.springframework.boot:spring-boot-starter-security'
+
+    // Auto-configuration support
+    api 'org.springframework.boot:spring-boot-autoconfigure'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+
+    // Lombok for cleaner code
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+// Customize POM for this module
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            pom {
+                name = 'Exception Handling Security Starter'
+                description = 'Spring Security exception handling for Spring Boot microservices. Extends exception-handling-starter with authentication and authorization exception handlers.'
+            }
+        }
+    }
+}
