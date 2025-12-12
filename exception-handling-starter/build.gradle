@@ -5,10 +5,6 @@ dependencies {
     // Spring Web for @ControllerAdvice, ResponseEntity, HttpStatus
     api 'org.springframework.boot:spring-boot-starter-web'
 
-    // Spring Security for BadCredentialsException, AccessDeniedException
-    // Made optional so microservices without security can still use this starter
-    compileOnly 'org.springframework.boot:spring-boot-starter-security'
-
     // Validation for MethodArgumentNotValidException
     api 'org.springframework.boot:spring-boot-starter-validation'
 

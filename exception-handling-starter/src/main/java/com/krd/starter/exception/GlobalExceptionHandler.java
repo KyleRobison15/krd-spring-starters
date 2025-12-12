@@ -7,9 +7,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,11 +25,13 @@ import java.util.stream.Collectors;
  * <ul>
  *     <li>Validation errors (400)</li>
  *     <li>Malformed requests (400)</li>
- *     <li>Authentication failures (401)</li>
- *     <li>Authorization failures (403)</li>
  *     <li>Unsupported media types (415)</li>
  *     <li>Unexpected server errors (500)</li>
  * </ul>
+ *
+ * <p><b>Spring Security Exception Handling:</b>
+ * If your microservice uses Spring Security, add the {@code exception-handling-security-starter}
+ * dependency to handle authentication (401) and authorization (403) exceptions.
  *
  * <p><b>Domain-specific exceptions</b> (e.g., UserNotFoundException, ChatNotFoundException)
  * should be handled in microservice-specific {@code @ControllerAdvice} classes with higher precedence.
@@ -130,53 +129,6 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
-                .body(errorResponse);
-    }
-
-    /**
-     * Handles bad credentials (failed login attempts).
-     * Returns 401 Unauthorized.
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity<ErrorResponse> handleBadCredentialsException(
-            BadCredentialsException ex,
-            WebRequest request) {
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.UNAUTHORIZED.value())
-                .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
-                .message("Invalid email or password")
-                .path(getRequestPath(request))
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED)
-                .body(errorResponse);
-    }
-
-    /**
-     * Handles authorization failures (access denied to resources).
-     * Returns 403 Forbidden.
-     *
-     * Handles both AccessDeniedException (Spring Security 5.x) and
-     * AuthorizationDeniedException (Spring Security 6.x).
-     */
-    @ExceptionHandler({AccessDeniedException.class, AuthorizationDeniedException.class})
-    public ResponseEntity<ErrorResponse> handleAccessDeniedException(
-            Exception ex,
-            WebRequest request) {
-
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .timestamp(LocalDateTime.now())
-                .status(HttpStatus.FORBIDDEN.value())
-                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
-                .message("You do not have permission to access this resource")
-                .path(getRequestPath(request))
-                .build();
-
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
                 .body(errorResponse);
     }
 
