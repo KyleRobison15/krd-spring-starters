@@ -38,11 +38,10 @@ Once you add this starter, the following exceptions are automatically handled:
 | `HttpMessageNotReadableException` | 400 Bad Request | Malformed JSON or invalid request body |
 | `IllegalStateException` | 400 Bad Request | Business logic violations |
 | `IllegalArgumentException` | 400 or 403 | Invalid arguments or disabled accounts |
-| `BadCredentialsException` | 401 Unauthorized | Failed login attempts |
-| `AccessDeniedException` | 403 Forbidden | Authorization failures |
-| `AuthorizationDeniedException` | 403 Forbidden | Authorization failures (Spring Security 6.x) |
 | `HttpMediaTypeNotSupportedException` | 415 Unsupported Media Type | Wrong content type |
 | `Exception` (catch-all) | 500 Internal Server Error | Unexpected errors |
+
+> **Note:** For Spring Security exception handling (401 Unauthorized, 403 Forbidden), use the **[exception-handling-security-starter](../exception-handling-security-starter)** instead.
 
 ## Error Response Structure
 
@@ -165,9 +164,11 @@ The starter's `GlobalExceptionHandler` has **lowest precedence**:
 The starter includes:
 - `spring-boot-starter-web` (API dependency)
 - `spring-boot-starter-validation` (API dependency)
-- `spring-boot-starter-security` (compile-only, optional)
+- `spring-boot-autoconfigure` (API dependency)
 
-Security is compile-only so microservices without security can still use this starter.
+This starter has **no Spring Security dependency**, making it suitable for microservices without authentication/authorization.
+
+For microservices that **use Spring Security**, add the **[exception-handling-security-starter](../exception-handling-security-starter)** instead, which extends this core starter with Security-specific exception handlers.
 
 ## Best Practices
 
@@ -177,12 +178,20 @@ Security is compile-only so microservices without security can still use this st
 4. **Log appropriately**: The starter logs unexpected errors; add domain-specific logging as needed
 5. **Document errors**: Maintain a list of possible errors for API consumers
 
-## Example Project
+## Example Projects
 
-See the chatbot-api project for a complete example:
-- Domain handler: `ChatbotExceptionHandler.java`
-- Custom exceptions: `ChatNotFoundException`, `UserNotFoundException`
-- Two-tier architecture: Global + domain-specific handlers
+### Microservice WITHOUT Spring Security
+See the **krd-chat-assistant-svc** project for an example:
+- Uses `exception-handling-starter` (core only)
+- Domain handler: `ChatExceptionHandler.java`
+- Custom exception: `ChatNotFoundException`
+- No authentication/authorization
+
+### Microservice WITH Spring Security
+See the **chatbot-api** or **spring-api-template** projects for examples:
+- Use `exception-handling-security-starter` (core + security)
+- Gets 401/403 handling automatically
+- JWT authentication enabled
 
 ## License
 
